@@ -23,6 +23,7 @@ PERCEPTRON ALGORITHM
 """
 import numpy as np
 import pandas as pd
+from sklearn.metrics import confusion_matrix, classification_report
 import os
 
 
@@ -31,7 +32,7 @@ def step_function(value): # Suitable for discrete/binary classification but for 
     return 1 if value > 0 else -1
 
 
-def perceptron(X, y, learning_rate=0.01, epochs=100):
+def perceptron(X, y, learning_rate=0.03, epochs=100):
     """
     Perceptron algorithm to classify binary data:
 
@@ -83,7 +84,15 @@ if __name__ == "__main__":
     print("Final weights:", weights)
     print("Final bias:", bias)
 
-    # Test predictions
-    for x, target in zip(X[:10], y[:10]):  # Displaying first 10 for verification
-        prediction = step_function(np.dot(x, weights) + bias)
-        print(f"Input: {x}, Target: {target}, Prediction: {prediction}")
+    # Test predictions and evaluate model
+    y_pred = [step_function(np.dot(x, weights) + bias) for x in X]
+
+    # Print first 10 predictions for verification
+    for x, target, pred in zip(X[:10], y[:10], y_pred[:10]):
+        print(f"Input: {x}, Target: {target}, Prediction: {pred}")
+
+    # Compute confusion matrix
+    cm = confusion_matrix(y, y_pred)
+    print("Confusion Matrix:\n", cm)
+    print("Classification Report:\n", classification_report(y, y_pred))
+
